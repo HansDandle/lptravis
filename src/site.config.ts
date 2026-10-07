@@ -39,7 +39,7 @@ export const links = {
   contactFormDirect:
     'https://docs.google.com/forms/d/e/1FAIpQLSfnd2CIY6Sq4Xma1xTxJgPd7lDr1KXgGsZVzpABcCv9SqL80Q/viewform',
   email: 'lptravistx@gmail.com',
-  newsletter: 'https://groups.google.com/g/austinliberator',
+  newsletter: 'https://groups.google.com/g/austin_liberator',
   meetup: 'https://www.meetup.com/austin-libertarians/',
   facebookPage: 'https://www.facebook.com/lptravistx',
   facebookGroup: 'https://www.facebook.com/groups/TravisCountyLibertarians',
