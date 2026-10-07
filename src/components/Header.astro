@@ -1,0 +1,198 @@
+---
+import { site, nav, links } from '../site.config';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => {
+  const full = `${base}${href}`;
+  return href === '/' ? path === base || path === '/' : path.startsWith(full);
+};
+---
+
+<header class="site-header">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="wrap bar">
+    <a class="brand" href={`${base}/`}>
+      <span class="brand-mark" aria-hidden="true">LP</span>
+      <span class="brand-text">
+        <strong>LP Travis</strong>
+        <small>Libertarian Party of Travis County</small>
+      </span>
+    </a>
+
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <label for="nav-toggle" class="nav-burger" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </label>
+
+    <nav class="nav" aria-label="Main">
+      {nav.map((item) => (
+        <a
+          href={`${base}${item.href}`}
+          class:list={['nav-link', { active: isActive(item.href) }]}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))}
+      <a class="btn btn-primary nav-donate" href={links.donate} target="_blank" rel="noopener">
+        Donate
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: saturate(180%) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .skip {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--gold);
+    color: #16181d;
+    padding: 0.6rem 1rem;
+    border-radius: 0 0 8px 0;
+    font-weight: 600;
+  }
+  .skip:focus { left: 0; z-index: 100; }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 72px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--gold);
+    color: #16181d;
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+  }
+
+  .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
+  .brand-text strong {
+    font-family: var(--font-display);
+    font-size: 1.12rem;
+    color: var(--ink);
+  }
+  .brand-text small {
+    font-size: 0.73rem;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .nav-link {
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 550;
+    color: var(--body);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-link:hover { color: var(--ink); background: var(--surface-alt); }
+  .nav-link.active { color: var(--ink); font-weight: 680; }
+  .nav-link.active::after {
+    content: '';
+    display: block;
+    height: 2px;
+    margin-top: 2px;
+    border-radius: 2px;
+    background: var(--gold);
+  }
+
+  .nav-donate {
+    margin-left: 0.5rem;
+    padding: 0.55rem 1.15rem;
+    font-size: 0.93rem;
+  }
+
+  .nav-toggle,
+  .nav-burger { display: none; }
+
+  @media (max-width: 900px) {
+    .nav-burger {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 44px;
+      height: 44px;
+      padding: 0 10px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    .nav-burger span {
+      display: block;
+      height: 2px;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 0 16px;
+      max-height: 0;
+      overflow: hidden;
+      background: var(--bg);
+      border-bottom: 1px solid transparent;
+      transition: max-height 0.25s ease, padding 0.25s ease;
+    }
+
+    .nav-toggle:checked ~ .nav {
+      max-height: 480px;
+      padding: 0.5rem 16px 1.2rem;
+      border-bottom-color: var(--line);
+    }
+    .nav-toggle:checked ~ .nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle:checked ~ .nav-burger span:nth-child(2) { opacity: 0; }
+    .nav-toggle:checked ~ .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .nav-link {
+      padding: 0.85rem 0.5rem;
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+      font-size: 1.02rem;
+    }
+    .nav-link.active::after { display: none; }
+    .nav-donate { margin: 1rem 0 0; }
+  }
+</style>

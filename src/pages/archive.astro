@@ -1,0 +1,118 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const archivedPages = (await getCollection('pages', ({ data }) => data.archived)).sort(
+  (a, b) => a.data.title.localeCompare(b.data.title)
+);
+
+const posts = (await getCollection('news', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const byYear = new Map<number, typeof posts>();
+for (const post of posts) {
+  const y = post.data.date.getUTCFullYear();
+  if (!byYear.has(y)) byYear.set(y, []);
+  byYear.get(y)!.push(post);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+---
+
+<BaseLayout
+  title="Archive"
+  description="A complete index of LP Travis posts and archived pages, including past candidate slates."
+>
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">Archive</span>
+      <h1>Everything we've published</h1>
+      <p class="lede">
+        A complete index of posts from the LP Travis site, plus older pages kept
+        for the historical record.
+      </p>
+    </div>
+  </section>
+
+  {archivedPages.length > 0 && (
+    <section class="section">
+      <div class="wrap-narrow">
+        <h2>Archived pages</h2>
+        <ul class="plain">
+          {archivedPages.map((p) => (
+            <li>
+              <a href={`${base}/${p.id}`}>{p.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="wrap-narrow">
+      <h2>All posts</h2>
+      {years.map((year) => (
+        <div class="year-block">
+          <h3>{year}</h3>
+          <ul class="plain">
+            {byYear.get(year)!.map((post) => (
+              <li class="row">
+                <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+                <a href={`${base}/news/${post.id}`}>{post.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+    padding: clamp(2.5rem, 6vw, 4rem) 0;
+  }
+  .page-head h1 { margin-bottom: 0.6rem; }
+  .page-head .lede { max-width: 60ch; margin: 0; }
+
+  .section { padding: clamp(2rem, 5vw, 3rem) 0; }
+  .section + .section { padding-top: 0; }
+
+  .plain { list-style: none; margin: 0; padding: 0; }
+  .plain li { border-bottom: 1px solid var(--line); }
+  .plain a {
+    display: block;
+    padding: 0.75rem 0.2rem;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 550;
+  }
+  .plain a:hover { color: var(--gold-deep); }
+
+  .year-block { margin-bottom: 2rem; }
+  .year-block h3 {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .row { display: flex; align-items: baseline; gap: 1rem; }
+  .row time {
+    flex-shrink: 0;
+    width: 5rem;
+    font-size: 0.84rem;
+    color: var(--muted);
+  }
+  .row a { flex: 1; }
+</style>

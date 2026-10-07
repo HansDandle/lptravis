@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/url';
+import { links } from '../site.config';
+---
+
+<BaseLayout
+  title="Gear"
+  description="LP Travis County gear. Show your affiliation and support the local party — all proceeds are donations to LP Travis."
+>
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">Gear</span>
+      <h1>LP Travis County gear</h1>
+      <p class="lede">
+        Show off your affiliation while you support your local party. All
+        proceeds are donations to LP Travis.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap gear">
+      <a class="shot card" href={links.gear} target="_blank" rel="noopener">
+        <img src={url("/images/2023/06/image.png")} alt="LP Travis County gear" loading="lazy" decoding="async" />
+      </a>
+      <div class="copy">
+        <h2>Support the mission &amp; the movement</h2>
+        <p>
+          Shirts, hats, stickers, and more, carrying the LP Travis mark. Every
+          purchase is a donation that funds ballot access, candidate support,
+          events, and outreach across Travis County.
+        </p>
+        <div class="acts">
+          <a class="btn btn-primary" href={links.gear} target="_blank" rel="noopener">
+            Shop the gear store
+          </a>
+          <a class="btn btn-outline" href={links.donate} target="_blank" rel="noopener">
+            Donate directly
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+    padding: clamp(2.5rem, 6vw, 4rem) 0;
+  }
+  .page-head h1 { margin-bottom: 0.6rem; }
+  .page-head .lede { max-width: 60ch; margin: 0; }
+
+  .gear {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: center;
+  }
+
+  .shot { display: block; padding: 0; overflow: hidden; }
+  .shot img { width: 100%; height: auto; }
+
+  .copy h2 { margin-bottom: 0.8rem; }
+  .acts { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.4rem; }
+
+  @media (max-width: 820px) {
+    .gear { grid-template-columns: 1fr; }
+  }
+</style>

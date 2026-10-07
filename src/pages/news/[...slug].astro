@@ -1,0 +1,145 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('news', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  );
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      newer: posts[i - 1] ?? null,
+      older: posts[i + 1] ?? null,
+    },
+  }));
+}
+
+const { post, newer, older } = Astro.props;
+const { Content } = await render(post);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const formatted = post.data.date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  image={post.data.image}
+  article
+>
+  <article>
+    <header class="post-head">
+      <div class="wrap-narrow">
+        <a class="back" href={`${base}/news`}>&larr; All news</a>
+        <h1>{post.data.title}</h1>
+        <div class="meta">
+          <time datetime={post.data.date.toISOString()}>{formatted}</time>
+          {post.data.tags.map((t) => <span class="tag">{t}</span>)}
+        </div>
+      </div>
+    </header>
+
+    <div class="wrap-narrow prose">
+      <Content />
+    </div>
+  </article>
+
+  <nav class="wrap-narrow post-nav" aria-label="More posts">
+    {older ? (
+      <a class="pn" href={`${base}/news/${older.id}`}>
+        <span>&larr; Older</span>
+        <strong>{older.data.title}</strong>
+      </a>
+    ) : <span />}
+    {newer ? (
+      <a class="pn right" href={`${base}/news/${newer.id}`}>
+        <span>Newer &rarr;</span>
+        <strong>{newer.data.title}</strong>
+      </a>
+    ) : <span />}
+  </nav>
+</BaseLayout>
+
+<style>
+  .post-head {
+    padding: clamp(2rem, 5vw, 3.2rem) 0 1.6rem;
+  }
+
+  .back {
+    display: inline-block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 1.1rem;
+  }
+  .back:hover { text-decoration: underline; }
+
+  .post-head h1 { margin-bottom: 0.7rem; }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: var(--muted);
+    padding-bottom: 1.4rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .tag {
+    background: var(--surface-alt);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.12rem 0.65rem;
+    font-size: 0.73rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+  }
+
+  .prose { padding-bottom: 1rem; }
+
+  .post-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.8rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .pn {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    background: var(--surface);
+    transition: border-color 0.15s ease;
+  }
+  .pn:hover { border-color: var(--gold); }
+  .pn span { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+  .pn strong {
+    font-size: 0.96rem;
+    color: var(--ink);
+    line-height: 1.35;
+    font-weight: 600;
+  }
+  .pn.right { text-align: right; }
+
+  @media (max-width: 620px) {
+    .post-nav { grid-template-columns: 1fr; }
+    .pn.right { text-align: left; }
+  }
+</style>

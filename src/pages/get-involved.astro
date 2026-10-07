@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { meeting, links } from '../site.config';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const steps = [
+  {
+    n: '01',
+    title: 'Come to a meeting',
+    body: `Show up on the ${meeting.cadence.toLowerCase()} at ${meeting.venue}. Free, open to the public, no membership required. It is the fastest way to meet everyone.`,
+    cta: { label: 'Meeting details', href: `${base}/events`, external: false },
+  },
+  {
+    n: '02',
+    title: 'Stay in the loop',
+    body: 'Subscribe to the Austin Liberator for a weekly roundup of liberty-related goings on around Austin and beyond, and follow us on social media.',
+    cta: { label: 'Subscribe to the newsletter', href: links.newsletter, external: true },
+  },
+  {
+    n: '03',
+    title: 'Join the party',
+    body: 'Become a dues-paying member of the Libertarian Party of Texas. Membership supports the state and county affiliates and gives you a vote at conventions.',
+    cta: { label: 'Join LP Texas', href: links.lpTexas, external: true },
+  },
+  {
+    n: '04',
+    title: 'Run for office',
+    body: 'Travis County needs Libertarians on the ballot. Candidates are nominated at our county and state conventions in the spring of even-numbered years.',
+    cta: { label: 'Contact us about running', href: `${base}/contact`, external: false },
+  },
+  {
+    n: '05',
+    title: 'Volunteer',
+    body: 'Help with outreach, events, communications, candidate support, or community projects. If there is something you would like to do that you do not see, tell us.',
+    cta: { label: 'Get in touch', href: `${base}/contact`, external: false },
+  },
+  {
+    n: '06',
+    title: 'Donate',
+    body: 'Contributions fund ballot access, candidate support, events, and outreach across Travis County. Buying gear counts too — all proceeds are donations.',
+    cta: { label: 'Donate to LP Travis', href: links.donate, external: true },
+  },
+];
+---
+
+<BaseLayout
+  title="Get Involved"
+  description="Ways to get involved with the Libertarian Party of Travis County: attend a meeting, join, volunteer, run for office, or donate."
+>
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">Get involved</span>
+      <h1>Six ways to help</h1>
+      <p class="lede">
+        You don't have to be a party member, a political junkie, or even a
+        registered Libertarian. Pick whichever of these fits the time you have.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <ol class="steps">
+        {steps.map((s) => (
+          <li class="card step">
+            <span class="n">{s.n}</span>
+            <h2>{s.title}</h2>
+            <p>{s.body}</p>
+            <a
+              href={s.cta.href}
+              target={s.cta.external ? '_blank' : undefined}
+              rel={s.cta.external ? 'noopener' : undefined}
+            >
+              {s.cta.label} &rarr;
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="wrap-narrow vote">
+      <span class="eyebrow">Before anything else</span>
+      <h2>Make sure you're registered to vote</h2>
+      <p>
+        Texas has a voter registration deadline 30 days before each election, and
+        registration doesn't follow you when you move. Check your status and
+        register through the Texas Secretary of State.
+      </p>
+      <a class="btn btn-primary" href={links.registerToVote} target="_blank" rel="noopener">
+        Register or check your registration
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+    padding: clamp(2.5rem, 6vw, 4rem) 0;
+  }
+  .page-head h1 { margin-bottom: 0.6rem; }
+  .page-head .lede { max-width: 62ch; margin: 0; }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .step {
+    padding: 1.6rem 1.7rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .n {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--gold-deep);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.6rem;
+  }
+
+  .step h2 { font-size: 1.2rem; margin-bottom: 0.55rem; }
+  .step p { font-size: 0.96rem; margin-bottom: 1.1rem; }
+  .step a {
+    margin-top: auto;
+    font-weight: 650;
+    font-size: 0.93rem;
+    text-decoration: none;
+  }
+  .step a:hover { text-decoration: underline; }
+
+  .vote { text-align: center; }
+  .vote h2 { margin-bottom: 0.7rem; }
+  .vote p { max-width: 56ch; margin: 0 auto 1.5rem; }
+</style>

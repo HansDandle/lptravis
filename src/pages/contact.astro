@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { meeting, links } from '../site.config';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const social = [
+  { label: 'Facebook page', href: links.facebookPage },
+  { label: 'Facebook group', href: links.facebookGroup },
+  { label: 'Twitter / X', href: links.twitter },
+  { label: 'Instagram', href: links.instagram },
+  { label: 'Meetup', href: links.meetup },
+];
+---
+
+<BaseLayout
+  title="Contact"
+  description="Get in touch with the Libertarian Party of Travis County — by form, by email, or in person at our monthly meeting."
+>
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">Contact</span>
+      <h1>Get in touch</h1>
+      <p class="lede">
+        Questions about the party, running for office, volunteering, or speaking
+        at a meeting? Send us a note — or just come say hello in person.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap contact-grid">
+      <div class="form-col">
+        <h2>Send us a message</h2>
+        <div class="form-shell">
+          <iframe
+            src={links.contactForm}
+            title="Contact the Libertarian Party of Travis County"
+            loading="lazy"
+          >Loading contact form…</iframe>
+        </div>
+        <p class="fallback">
+          Form not loading?
+          <a href={links.contactFormDirect} target="_blank" rel="noopener">
+            Open it in a new tab
+          </a>
+          or email
+          <a href={`mailto:${links.email}`}>{links.email}</a>.
+        </p>
+      </div>
+
+      <aside class="side">
+        <div class="card blk">
+          <h3>Email</h3>
+          <p><a href={`mailto:${links.email}`}>{links.email}</a></p>
+        </div>
+
+        <div class="card blk">
+          <h3>Meet us in person</h3>
+          <p>
+            {meeting.cadence}<br />
+            {meeting.time}<br />
+            <a href={meeting.mapUrl} target="_blank" rel="noopener">{meeting.venue}</a><br />
+            <span class="dim">{meeting.address}</span>
+          </p>
+          <a class="btn btn-outline full" href={`${base}/events`}>Event details</a>
+        </div>
+
+        <div class="card blk">
+          <h3>Follow us</h3>
+          <ul>
+            {social.map((s) => (
+              <li><a href={s.href} target="_blank" rel="noopener">{s.label}</a></li>
+            ))}
+            <li><a href={links.newsletter} target="_blank" rel="noopener">Austin Liberator</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+    padding: clamp(2.5rem, 6vw, 4rem) 0;
+  }
+  .page-head h1 { margin-bottom: 0.6rem; }
+  .page-head .lede { max-width: 62ch; margin: 0; }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: clamp(2rem, 4vw, 3rem);
+    align-items: start;
+  }
+
+  .form-col h2 { margin-bottom: 1.2rem; }
+
+  .form-shell {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .form-shell iframe {
+    display: block;
+    width: 100%;
+    height: 1100px;
+    border: 0;
+  }
+
+  .fallback { margin-top: 0.9rem; font-size: 0.9rem; color: var(--muted); }
+
+  .side { display: grid; gap: 1.2rem; }
+  .blk { padding: 1.4rem 1.5rem; }
+  .blk h3 {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.7rem;
+  }
+  .blk p { font-size: 0.96rem; line-height: 1.65; margin-bottom: 1rem; }
+  .blk ul { list-style: none; margin: 0; padding: 0; }
+  .blk li { margin-bottom: 0.45rem; font-size: 0.94rem; }
+  .dim { color: var(--muted); font-size: 0.88rem; }
+  .full { width: 100%; }
+
+  @media (max-width: 900px) {
+    .contact-grid { grid-template-columns: 1fr; }
+    .form-shell iframe { height: 1000px; }
+  }
+</style>

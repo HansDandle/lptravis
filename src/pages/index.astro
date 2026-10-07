@@ -1,0 +1,243 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NewsCard from '../components/NewsCard.astro';
+import { site, meeting, links } from '../site.config';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const posts = (await getCollection('news', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+const recent = posts.slice(0, 3);
+
+const pillars = [
+  {
+    title: 'Monthly happy hour meetings',
+    body: 'Second Monday of the month at Casa Chapala. Guest speakers, lively discussion, and no cost to walk in the door.',
+    href: '/events',
+    cta: 'See upcoming events',
+  },
+  {
+    title: 'Local candidates & ballot positions',
+    body: 'We recruit and support Libertarian candidates in Travis County, and publish positions on local ballot measures.',
+    href: '/news',
+    cta: 'Read our positions',
+  },
+  {
+    title: 'Activism and education',
+    body: 'Liberty Speakers Series, outreach, service projects, lobbying, and leadership training across the Austin area.',
+    href: '/get-involved',
+    cta: 'Find a way to help',
+  },
+];
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <span class="kicker">Austin &amp; Travis County, Texas</span>
+        <h1>The most libertarian<br />county in the country.</h1>
+        <p class="lede">
+          The Libertarian Party of Travis County works for smaller government,
+          individual liberty, and free markets right here at home — through
+          monthly meetings, local candidates, and year-round activism.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href={`${base}/events`}>Come to a meeting</a>
+          <a class="btn btn-ghost-light" href={links.donate} target="_blank" rel="noopener">
+            Donate
+          </a>
+        </div>
+      </div>
+
+      <aside class="meeting-card" aria-labelledby="meet-h">
+        <span class="eyebrow">Next meeting</span>
+        <h2 id="meet-h">{meeting.cadence}</h2>
+        <dl>
+          <div><dt>Time</dt><dd>{meeting.time}</dd></div>
+          <div><dt>Where</dt><dd>
+            <a href={meeting.mapUrl} target="_blank" rel="noopener">{meeting.venue}</a>
+            <span class="addr">{meeting.address} ({meeting.addressNote})</span>
+          </dd></div>
+        </dl>
+        <p class="note">{meeting.note}</p>
+        <a class="btn btn-outline full" href={`${base}/events`}>Event details &amp; calendar</a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">What we do</span>
+        <h2>Liberty, organized locally</h2>
+      </div>
+      <div class="grid grid-3">
+        {pillars.map((p) => (
+          <div class="card pillar">
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+            <a href={`${base}${p.href}`}>{p.cta} &rarr;</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {recent.length > 0 && (
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="section-head row">
+          <div>
+            <span class="eyebrow">Latest</span>
+            <h2>News &amp; announcements</h2>
+          </div>
+          <a class="btn btn-outline" href={`${base}/news`}>All news</a>
+        </div>
+        <div class="grid grid-3">
+          {recent.map((post) => (
+            <NewsCard
+              href={`${base}/news/${post.id}`}
+              title={post.data.title}
+              date={post.data.date}
+              description={post.data.description}
+              image={post.data.image}
+              tags={post.data.tags}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section cta">
+    <div class="wrap-narrow cta-inner">
+      <h2>Get involved in Travis County</h2>
+      <p>
+        Show up to a meeting, join the mailing list, run for office, or chip in.
+        Every bit of it moves liberty forward locally.
+      </p>
+      <div class="cta-actions">
+        <a class="btn btn-primary" href={`${base}/get-involved`}>Ways to get involved</a>
+        <a class="btn btn-ghost-light" href={links.newsletter} target="_blank" rel="noopener">
+          Subscribe to the Austin Liberator
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 0%, rgba(245, 183, 0, 0.16), transparent 60%),
+      linear-gradient(160deg, var(--navy) 0%, var(--navy-soft) 100%);
+    color: #e8ecf5;
+    padding: clamp(3.2rem, 9vw, 6rem) 0 clamp(3rem, 7vw, 4.5rem);
+  }
+
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: center;
+  }
+
+  .kicker {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.9rem;
+  }
+
+  .hero h1 {
+    color: #fff;
+    font-size: clamp(2.1rem, 5.4vw, 3.5rem);
+    margin-bottom: 1rem;
+  }
+
+  .hero .lede {
+    color: #c3cbdb;
+    max-width: 54ch;
+    margin-bottom: 1.8rem;
+  }
+
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+
+  .meeting-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 1.6rem 1.7rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--line);
+  }
+  .meeting-card h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--ink);
+  }
+  .meeting-card dl { margin: 0 0 1rem; }
+  .meeting-card dl > div { margin-bottom: 0.8rem; }
+  .meeting-card dt {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.15rem;
+  }
+  .meeting-card dd {
+    margin: 0;
+    font-size: 0.97rem;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .addr { display: block; font-size: 0.86rem; color: var(--muted); }
+  .note {
+    font-size: 0.88rem;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    padding-top: 0.9rem;
+    margin: 0 0 1.1rem;
+  }
+  .full { width: 100%; }
+
+  .section-head { margin-bottom: 2rem; }
+  .section-head h2 { margin: 0; }
+  .section-head.row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .pillar { padding: 1.5rem 1.6rem; }
+  .pillar h3 { font-size: 1.15rem; margin-bottom: 0.6rem; }
+  .pillar p { font-size: 0.96rem; margin-bottom: 1rem; }
+  .pillar a { font-weight: 650; font-size: 0.92rem; text-decoration: none; }
+  .pillar a:hover { text-decoration: underline; }
+
+  .cta {
+    background: linear-gradient(160deg, var(--navy) 0%, var(--navy-soft) 100%);
+    color: #e8ecf5;
+    text-align: center;
+  }
+  .cta h2 { color: #fff; }
+  .cta p { color: #c3cbdb; max-width: 52ch; margin: 0 auto 1.6rem; }
+  .cta-actions {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 880px) {
+    .hero-inner { grid-template-columns: 1fr; }
+  }
+</style>

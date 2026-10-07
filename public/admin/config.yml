@@ -1,0 +1,80 @@
+# Sveltia CMS configuration.
+#
+# This powers the web editor at /admin/ so officers can write posts without
+# touching git directly. It commits Markdown straight into this repository,
+# which triggers the normal GitHub Pages build.
+#
+# Before it will work you must connect an auth backend — see docs/EDITING.md.
+
+backend:
+  name: github
+  repo: HansDandle/lptravis
+  branch: main
+  # Sveltia's hosted OAuth relay. Swap this out if you self-host the auth worker.
+  base_url: https://sveltia-cms-auth.sveltia.workers.dev
+
+# Uploaded images land beside the migrated ones.
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+publish_mode: simple
+
+collections:
+  - name: news
+    label: News & Announcements
+    label_singular: Post
+    folder: src/content/news
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    extension: md
+    format: frontmatter
+    summary: '{{date}} — {{title}}'
+    sortable_fields: [date, title]
+    view_filters:
+      - label: Drafts
+        field: draft
+        pattern: true
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: date, label: Date, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
+      - name: description
+        label: Short summary
+        widget: text
+        required: false
+        hint: One or two sentences shown on the news index and in link previews.
+      - name: image
+        label: Header image
+        widget: image
+        required: false
+        hint: Shown on the news index card and in social link previews.
+      - name: tags
+        label: Tags
+        widget: list
+        required: false
+        hint: 'For example: MHHM, Elections, Conventions'
+      - name: draft
+        label: Draft (hide from the site)
+        widget: boolean
+        default: false
+        required: false
+      - { name: body, label: Body, widget: markdown }
+
+  - name: pages
+    label: Pages
+    label_singular: Page
+    folder: src/content/pages
+    create: true
+    extension: md
+    format: frontmatter
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: description
+        label: Short summary
+        widget: text
+        required: false
+      - name: archived
+        label: Archived (keep online, hide from navigation)
+        widget: boolean
+        default: false
+        required: false
+      - { name: body, label: Body, widget: markdown }

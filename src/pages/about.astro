@@ -1,0 +1,213 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/url';
+import { meeting, links, officers } from '../site.config';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<BaseLayout
+  title="About Us"
+  description="Who we are: the Libertarian Party of Travis County, the Austin-area affiliate of the Libertarian Party of Texas."
+>
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">About us</span>
+      <h1>The Libertarian Party of Travis County</h1>
+      <p class="lede">
+        Referred to as
+        <a
+          href="http://www.politico.com/blogs/charlie-mahtesian/2012/12/the-most-libertarian-place-in-america-152016.html"
+          target="_blank"
+          rel="noopener">the most libertarian county in the country</a>, LP Travis is
+        affiliated with the
+        <a href={links.lpTexas} target="_blank" rel="noopener">Libertarian Party of Texas</a>
+        and the
+        <a href={links.lpNational} target="_blank" rel="noopener">national Libertarian Party</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap two-col">
+      <div>
+        <h2>What we stand for</h2>
+        <p>
+          We believe in smaller government, individual liberty, and free markets —
+          that adults should be free to run their own lives, keep what they earn,
+          and make their own choices without permission from city hall or the
+          statehouse. Our positions follow the Libertarian Party's
+          <a href={links.platform} target="_blank" rel="noopener">Principles &amp; Platform</a>.
+        </p>
+        <p>
+          Locally, that means recruiting and supporting Libertarian candidates in
+          Travis County, taking public positions on city and state ballot
+          measures, and giving liberty-minded Austinites a place to meet, argue,
+          organize, and get things done.
+        </p>
+        <h2>What we do</h2>
+        <p>
+          LP Travis holds Monthly Happy Hour Meetings where we socialize, network,
+          learn, and handle party business — usually with a guest speaker. Beyond
+          the monthly meeting we run social events, educational programming, service
+          projects, leadership training, campaigning, lobbying, activism, and a
+          Liberty Speakers Series.
+        </p>
+      </div>
+
+      <aside class="meet-aside card">
+        <span class="eyebrow">Monthly meeting</span>
+        <h3>{meeting.cadence}</h3>
+        <p class="t">{meeting.time}</p>
+        <p>
+          <a href={meeting.mapUrl} target="_blank" rel="noopener">{meeting.venue}</a><br />
+          <span class="dim">{meeting.address}</span>
+        </p>
+        <p class="note">{meeting.note}</p>
+        <a class="btn btn-outline full" href={`${base}/events`}>Events &amp; calendar</a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Leadership</span>
+        <h2>County Executive Committee</h2>
+      </div>
+      <ul class="officers">
+        {officers.map((o) => (
+          <li class="card officer">
+            {o.photo ? (
+              <img src={url(o.photo)} alt={o.name} loading="lazy" decoding="async" />
+            ) : (
+              <div class="avatar" aria-hidden="true">
+                {o.name.split(' ').map((n) => n[0]).join('')}
+              </div>
+            )}
+            <strong>{o.name}</strong>
+            <span>{o.role}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="committee-note">
+        Interested in a committee or a project — or something you'd like to do that
+        you don't see here? <a href={`${base}/contact`}>Contact us</a> or come meet us
+        at an upcoming monthly meeting.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap-narrow">
+      <h2>More about the party</h2>
+      <div class="links">
+        <a class="card lk" href={`${base}/bylaws`}>
+          <strong>Bylaws</strong>
+          <span>How the county party is organized and governed.</span>
+        </a>
+        <a class="card lk" href={`${base}/archive`}>
+          <strong>Archive</strong>
+          <span>Past candidate slates and older pages from our history.</span>
+        </a>
+        <a class="card lk" href={`${base}/get-involved`}>
+          <strong>Get involved</strong>
+          <span>Join, volunteer, run for office, or donate.</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+    padding: clamp(2.5rem, 6vw, 4rem) 0;
+  }
+  .page-head h1 { margin-bottom: 0.6rem; }
+  .page-head .lede { max-width: 64ch; margin: 0; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: start;
+  }
+  .two-col h2:first-child { margin-top: 0; }
+  .two-col h2 { margin-top: 2rem; }
+
+  .meet-aside { padding: 1.5rem 1.6rem; position: sticky; top: 96px; }
+  .meet-aside h3 { font-size: 1.15rem; margin-bottom: 0.3rem; }
+  .meet-aside .t { font-weight: 600; color: var(--ink); margin-bottom: 0.8rem; }
+  .meet-aside p { font-size: 0.95rem; }
+  .dim { color: var(--muted); font-size: 0.88rem; }
+  .note {
+    font-size: 0.88rem;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    padding-top: 0.9rem;
+  }
+  .full { width: 100%; }
+
+  .section-head { margin-bottom: 2rem; }
+  .section-head h2 { margin: 0; }
+
+  .officers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.2rem;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  }
+  .officer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.4rem 1rem;
+  }
+  .officer img,
+  .officer .avatar {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.9rem;
+  }
+  .officer .avatar {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--navy), var(--navy-soft));
+    color: var(--gold);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  .officer strong { color: var(--ink); font-size: 1rem; }
+  .officer span { color: var(--muted); font-size: 0.88rem; }
+
+  .committee-note {
+    margin-top: 2rem;
+    font-size: 0.97rem;
+    text-align: center;
+    color: var(--body);
+  }
+
+  .links { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .lk {
+    padding: 1.2rem 1.3rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .lk strong { color: var(--ink); font-size: 1.02rem; }
+  .lk span { color: var(--muted); font-size: 0.9rem; }
+
+  @media (max-width: 880px) {
+    .two-col { grid-template-columns: 1fr; }
+    .meet-aside { position: static; }
+  }
+</style>

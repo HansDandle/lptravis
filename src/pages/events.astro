@@ -1,0 +1,201 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { meeting, links } from '../site.config';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Meeting announcements double as our event listings; surface the newest few.
+const announcements = (await getCollection('news', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 4);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+
+<BaseLayout
+  title="Events"
+  description="Monthly Happy Hour Meetings, conventions, and other Libertarian Party of Travis County events in Austin."
+>
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">Events</span>
+      <h1>Come meet us</h1>
+      <p class="lede">
+        Our Monthly Happy Hour Meeting is the easiest way to meet the party.
+        It's free, open to the public, and you don't need to be a member or a
+        Libertarian to show up.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="headline card">
+        <div class="hl-main">
+          <span class="eyebrow">Monthly Happy Hour Meeting</span>
+          <h2>{meeting.cadence}</h2>
+          <p class="time">{meeting.time}</p>
+          <p class="where">
+            <a href={meeting.mapUrl} target="_blank" rel="noopener">{meeting.venue}</a><br />
+            {meeting.address}<br />
+            <span class="dim">{meeting.addressNote}</span>
+          </p>
+          <p class="note">{meeting.note}</p>
+          <div class="acts">
+            <a class="btn btn-primary" href={meeting.mapUrl} target="_blank" rel="noopener">
+              Get directions
+            </a>
+            <a class="btn btn-outline" href={links.facebookPage} target="_blank" rel="noopener">
+              Events on Facebook
+            </a>
+          </div>
+        </div>
+        <div class="hl-side">
+          <h3>Never miss one</h3>
+          <ul>
+            <li><a href={links.newsletter} target="_blank" rel="noopener">Austin Liberator newsletter</a></li>
+            <li><a href={links.meetup} target="_blank" rel="noopener">Austin Libertarian Meetup</a></li>
+            <li><a href={links.facebookGroup} target="_blank" rel="noopener">Facebook group</a></li>
+            <li><a href={`${base}/rss.xml`}>RSS feed</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Calendar</span>
+        <h2>LP Travis events calendar</h2>
+      </div>
+      <div class="cal">
+        <iframe
+          src={links.calendar}
+          title="Libertarian Party of Travis County events calendar"
+          loading="lazy"
+        ></iframe>
+      </div>
+      <p class="cal-note">
+        Trouble viewing the calendar?
+        <a href={links.calendarPublic} target="_blank" rel="noopener">Open it in Google Calendar</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head row">
+        <div>
+          <span class="eyebrow">Recent announcements</span>
+          <h2>Latest from the party</h2>
+        </div>
+        <a class="btn btn-outline" href={`${base}/news`}>All news</a>
+      </div>
+      <ul class="ann">
+        {announcements.map((p) => (
+          <li>
+            <a href={`${base}/news/${p.id}`}>
+              <time datetime={p.data.date.toISOString()}>{fmt(p.data.date)}</time>
+              <strong>{p.data.title}</strong>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+    padding: clamp(2.5rem, 6vw, 4rem) 0;
+  }
+  .page-head h1 { margin-bottom: 0.6rem; }
+  .page-head .lede { max-width: 62ch; margin: 0; }
+
+  .headline {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 0;
+    overflow: hidden;
+  }
+  .hl-main { padding: clamp(1.6rem, 4vw, 2.4rem); }
+  .hl-main h2 { font-size: clamp(1.5rem, 3.2vw, 2rem); margin-bottom: 0.3rem; }
+  .time { font-size: 1.1rem; font-weight: 600; color: var(--ink); margin-bottom: 1rem; }
+  .where { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; }
+  .dim { color: var(--muted); font-size: 0.9rem; }
+  .note {
+    font-size: 0.93rem;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    padding-top: 1rem;
+    margin-bottom: 1.3rem;
+  }
+  .acts { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+
+  .hl-side {
+    background: var(--surface-alt);
+    padding: clamp(1.6rem, 4vw, 2.4rem);
+    border-left: 1px solid var(--line);
+  }
+  .hl-side h3 { font-size: 1.02rem; margin-bottom: 0.9rem; }
+  .hl-side ul { list-style: none; margin: 0; padding: 0; }
+  .hl-side li { margin-bottom: 0.6rem; font-size: 0.94rem; }
+
+  .section-head { margin-bottom: 2rem; }
+  .section-head h2 { margin: 0; }
+  .section-head.row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .cal {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .cal iframe {
+    display: block;
+    width: 100%;
+    height: 620px;
+    border: 0;
+  }
+  .cal-note { margin-top: 0.9rem; font-size: 0.9rem; color: var(--muted); }
+
+  .ann { list-style: none; margin: 0; padding: 0; }
+  .ann li { border-bottom: 1px solid var(--line); }
+  .ann a {
+    display: flex;
+    align-items: baseline;
+    gap: 1.2rem;
+    padding: 1rem 0.2rem;
+    text-decoration: none;
+  }
+  .ann time {
+    flex-shrink: 0;
+    width: 11rem;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .ann strong { color: var(--ink); font-weight: 600; font-size: 1.02rem; }
+  .ann a:hover strong { color: var(--gold-deep); }
+
+  @media (max-width: 880px) {
+    .headline { grid-template-columns: 1fr; }
+    .hl-side { border-left: 0; border-top: 1px solid var(--line); }
+  }
+  @media (max-width: 620px) {
+    .cal iframe { height: 520px; }
+    .ann a { flex-direction: column; gap: 0.2rem; }
+    .ann time { width: auto; }
+  }
+</style>

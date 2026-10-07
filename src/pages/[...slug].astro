@@ -1,0 +1,53 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  return pages.map((page) => ({ params: { slug: page.id }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<BaseLayout title={page.data.title} description={page.data.description}>
+  <article>
+    <header class="page-head">
+      <div class="wrap-narrow">
+        {page.data.archived && (
+          <p class="archived">
+            This is an archived page kept for the historical record. See
+            <a href={`${base}/news`}>the news section</a> for current information.
+          </p>
+        )}
+        <h1>{page.data.title}</h1>
+      </div>
+    </header>
+    <div class="wrap-narrow prose">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .page-head { padding: clamp(2rem, 5vw, 3.2rem) 0 1.4rem; }
+  .page-head h1 {
+    margin-bottom: 0;
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .archived {
+    background: color-mix(in srgb, var(--gold) 14%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--gold) 45%, var(--line));
+    border-radius: var(--radius);
+    padding: 0.8rem 1rem;
+    font-size: 0.92rem;
+    color: var(--ink);
+    margin-bottom: 1.4rem;
+  }
+
+  .prose { padding-bottom: 1.5rem; }
+</style>
