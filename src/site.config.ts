@@ -52,14 +52,25 @@ export const links = {
 };
 
 /** County Executive Committee, as listed on the About page. */
-// Officers show a headshot when `photo` is set, and their initials otherwise.
-// To add one: put the image in public/images/ and set the path here.
+/**
+ * A group photo of the committee, shown on the About page.
+ * `order` lists the officers as they appear in the photo, left to right, so the
+ * caption underneath stays in sync with the image. Set to null to fall back to
+ * the individual officer cards below.
+ */
+export const officersPhoto = {
+  src: '/images/2026/officers2026-28.jpg',
+  alt: 'The 2026 LP Travis County Executive Committee standing together in front of a Libertarian Party banner.',
+  order: ['Girish Altekar', 'Lisa Schlinkert', 'Austin Whaley', 'Ted Brown', 'Bill Kelsey'],
+};
+
+/** The County Executive Committee, listed in order of office. */
 export const officers = [
-  { name: 'Austin Whaley', role: 'Chair', photo: null },
-  { name: 'Ted Brown', role: 'Vice Chair', photo: '/images/2024/06/ted-brown-hs.png' },
-  { name: 'Lisa Schlinkert', role: 'Secretary', photo: null },
-  { name: 'Girish Altekar', role: 'Treasurer', photo: '/images/2024/06/girish.jpg' },
-  { name: 'Bill Kelsey', role: 'At Large', photo: '/images/2024/06/bill-k.png' },
+  { name: 'Austin Whaley', role: 'Chair' },
+  { name: 'Ted Brown', role: 'Vice Chair' },
+  { name: 'Lisa Schlinkert', role: 'Secretary' },
+  { name: 'Girish Altekar', role: 'Treasurer' },
+  { name: 'Bill Kelsey', role: 'At Large' },
 ];
 
 export const nav = [

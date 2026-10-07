@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { url } from '../lib/url';
-import { meeting, links, officers } from '../site.config';
+import { meeting, links, officers, officersPhoto } from '../site.config';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
@@ -75,21 +75,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <span class="eyebrow">Leadership</span>
         <h2>County Executive Committee</h2>
       </div>
-      <ul class="officers">
-        {officers.map((o) => (
-          <li class="card officer">
-            {o.photo ? (
-              <img src={url(o.photo)} alt={o.name} loading="lazy" decoding="async" />
-            ) : (
-              <div class="avatar" aria-hidden="true">
-                {o.name.split(' ').map((n) => n[0]).join('')}
-              </div>
-            )}
-            <strong>{o.name}</strong>
-            <span>{o.role}</span>
-          </li>
-        ))}
-      </ul>
+      <div class="cec">
+        <figure class="cec-photo card">
+          <img src={url(officersPhoto.src)} alt={officersPhoto.alt} loading="lazy" decoding="async" />
+          <figcaption>
+            Left to right: {officersPhoto.order.join(', ')}.
+          </figcaption>
+        </figure>
+
+        <ul class="officers">
+          {officers.map((o) => (
+            <li>
+              <strong>{o.name}</strong>
+              <span>{o.role}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
       <p class="committee-note">
         Interested in a committee or a project — or something you'd like to do that
         you don't see here? <a href={`${base}/contact`}>Contact us</a> or come meet us
@@ -153,40 +155,45 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   .section-head { margin-bottom: 2rem; }
   .section-head h2 { margin: 0; }
 
-  .officers {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .cec {
     display: grid;
-    gap: 1.2rem;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  }
-  .officer {
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(1.8rem, 4vw, 3rem);
     align-items: center;
-    text-align: center;
-    padding: 1.4rem 1rem;
   }
-  .officer img,
-  .officer .avatar {
-    width: 92px;
-    height: 92px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 0.9rem;
+
+  .cec-photo { margin: 0; padding: 0; overflow: hidden; }
+  .cec-photo img { width: 100%; height: auto; display: block; }
+  .cec-photo figcaption {
+    padding: 0.9rem 1.2rem 1.1rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
   }
-  .officer .avatar {
-    display: grid;
-    place-items: center;
-    background: linear-gradient(135deg, var(--navy), var(--navy-soft));
-    color: var(--gold);
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 800;
+
+  .officers { list-style: none; margin: 0; padding: 0; }
+  .officers li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--line);
   }
-  .officer strong { color: var(--ink); font-size: 1rem; }
-  .officer span { color: var(--muted); font-size: 0.88rem; }
+  .officers li:last-child { border-bottom: 0; }
+  .officers strong { color: var(--ink); font-size: 1.05rem; font-weight: 650; }
+  .officers span {
+    color: var(--gold-deep);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 820px) {
+    .cec { grid-template-columns: 1fr; }
+  }
 
   .committee-note {
     margin-top: 2rem;
