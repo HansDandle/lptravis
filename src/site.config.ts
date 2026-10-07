@@ -52,12 +52,14 @@ export const links = {
 };
 
 /** County Executive Committee, as listed on the About page. */
+// Officers show a headshot when `photo` is set, and their initials otherwise.
+// To add one: put the image in public/images/ and set the path here.
 export const officers = [
-  { name: 'Dan McCarthy', role: 'Chair', photo: '/images/2023/09/dan-best-headshot.png' },
-  { name: 'Ted Brown', role: 'Vice Chair', photo: null },
+  { name: 'Austin Whaley', role: 'Chair', photo: null },
+  { name: 'Ted Brown', role: 'Vice Chair', photo: '/images/2024/06/ted-brown-hs.png' },
   { name: 'Lisa Schlinkert', role: 'Secretary', photo: null },
-  { name: 'Jonathan Patschke', role: 'Treasurer', photo: null },
-  { name: 'Girish Altekar', role: 'At Large', photo: null },
+  { name: 'Girish Altekar', role: 'Treasurer', photo: '/images/2024/06/girish.jpg' },
+  { name: 'Bill Kelsey', role: 'At Large', photo: '/images/2024/06/bill-k.png' },
 ];
 
 export const nav = [
