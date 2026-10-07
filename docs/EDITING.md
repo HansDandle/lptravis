@@ -100,6 +100,47 @@ To take a post down without deleting it, turn **Draft** on and publish. It
 disappears from the site but stays in the editor. To delete permanently, use
 **Delete entry** at the bottom.
 
+## Adding a page
+
+Pages are for standing information that is not news — a volunteer handbook,
+a candidate questionnaire, convention rules. Click **Pages** in the sidebar,
+then **New Page**.
+
+**What happens when you publish one:**
+
+- It gets its own web address, based on the title. A page called
+  *Volunteer Handbook* becomes `/volunteer-handbook`.
+- It is listed automatically on the **[Archive](https://hansdandle.github.io/lptravis/archive)** page.
+- It does **not** appear in the menu at the top of the site. That menu is
+  deliberately short, and adding to it is a separate step (below).
+
+So a new page is live and linkable immediately — you can paste its address into
+an email or a Facebook post — but people browsing the site will not stumble on
+it unless you link to it.
+
+**Linking to a new page** is usually what you actually want. Edit a post or
+another page, select some text, and link it to the new page's address.
+
+**Adding it to the top menu** requires editing `src/site.config.ts`, in the
+`nav` section:
+
+```ts
+export const nav = [
+  { label: 'About', href: '/about' },
+  { label: 'News', href: '/news' },
+  ...
+];
+```
+
+Copy a line, paste it in the position you want, and change the label and href.
+Keep the menu short — more than about seven items and it stops working well on
+phones.
+
+**The Archived checkbox** keeps a page online but marks it as old. Archived
+pages show a note at the top saying they are kept for the historical record,
+and are listed separately on the Archive page. Use it for things like past
+candidate slates rather than deleting them.
+
 ## What the different buttons mean
 
 - **Publish** — saves and puts it on the live site
