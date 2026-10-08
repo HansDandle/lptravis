@@ -10,8 +10,7 @@ export const site = {
   tagline: 'Liberty in Texas, starting at home.',
   description:
     'The Libertarian Party of Travis County (LP Travis) is the Austin-area affiliate of the Libertarian Party of Texas. Monthly meetings, local candidates, and activism for a freer Travis County.',
-  // Change this to 'https://lptravis.org' once the domain points at GitHub Pages.
-  url: 'https://hansdandle.github.io/lptravis',
+  url: 'https://lptravis.org',
   locale: 'en_US',
 };
 

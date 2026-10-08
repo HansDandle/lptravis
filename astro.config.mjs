@@ -3,12 +3,12 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { rehypeBaseUrls } from './src/plugins/rehype-base-urls.mjs';
 
-// When the party moves to its own domain, set `site` to https://lptravis.org
-// and change `base` to '/'. Nothing else needs to change.
-const BASE = '/lptravis';
+// The site is served from its own domain, so there is no base path.
+// (On a project page such as <user>.github.io/lptravis, BASE would be '/lptravis'.)
+const BASE = '/';
 
 export default defineConfig({
-  site: 'https://hansdandle.github.io',
+  site: 'https://lptravis.org',
   base: BASE,
   trailingSlash: 'ignore',
   integrations: [sitemap()],
